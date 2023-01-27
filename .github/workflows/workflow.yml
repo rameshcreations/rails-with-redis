@@ -9,7 +9,6 @@ permissions:
       contents: read
 env:
   CLUSTER: rails-aws-dev
-  REGION: us-east-1
 
 jobs:
   build-and-push-image:
@@ -56,7 +55,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::592309593815:role/rails-aws-master-github-oidc
           role-session-name: rails-github-ci
-          aws-region: $REGION
+          aws-region: us-east-1
           
       - name: Check AWS Creds
         run: aws sts get-caller-identity
@@ -64,5 +63,5 @@ jobs:
       - name: Kubectl Access
         run: |
           aws --version
-          aws eks --region $REGION update-kubeconfig --name ${CLUSTER}
+          aws eks --region us-east-1 update-kubeconfig --name ${CLUSTER}
           kubectl get namespace
