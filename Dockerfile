@@ -23,7 +23,7 @@ FROM ruby:3.1.1-alpine as final-image
 LABEL "owner"="rameshcreations"
 LABEL version="1.0"
 ENV BUNDLE_PATH /usr/local/bundle/gems
-RUN addgroup -S app -g 1000  && adduser -S app -u 1000 -G app -h /var/app && \
+RUN addgroup -S app -g 1000  && adduser -S app -u 1000 -G app -h /var/app
 # Switch to this user
 USER app
 # We'll install the app in this directory
