@@ -1,0 +1,36 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: rails-aws
+spec:
+  replicas: 2
+  selector:
+      matchLabels:
+          app: rails-aws
+  template:
+    metadata:
+      name: rails-aws
+      labels:
+        app: rails-aws
+    spec:
+      containers:
+      - name: rails-aws-app
+        image: 592309593815.dkr.ecr.us-east-1.amazonaws.com/rails-aws:latest
+        resources:
+          limits:
+            memory: "500Mi"
+            cpu: "100m"
+        imagePullPolicy: Always
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - curl -s http://localhost:3000 | grep rails
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        ports:
+        - name: rails-aws
+          containerPort: 3000
+      nodeSelector:
+        kubernetes.io/os: linux
