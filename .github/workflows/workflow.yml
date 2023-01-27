@@ -56,7 +56,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::592309593815:role/rails-aws-master-github-oidc
           role-session-name: rails-github-ci
-          aws-region: ${REGION}
+          aws-region: $REGION
           
       - name: Check AWS Creds
         run: aws sts get-caller-identity
@@ -64,5 +64,5 @@ jobs:
       - name: Kubectl Access
         run: |
           aws --version
-          aws eks --region ${REGION} update-kubeconfig --name ${CLUSTER}
+          aws eks --region $REGION update-kubeconfig --name ${CLUSTER}
           kubectl get namespace
