@@ -21,11 +21,6 @@ spec:
             memory: "500Mi"
             cpu: "100m"
         imagePullPolicy: Always
-        env:
-        - name: LB
-          value: "http://a3378bf6c935b4d46b84109bbccaff48-843951047.us-east-1.elb.amazonaws.com"
-        - name: RAILS_PRODUCTION_HOSTS
-          value: "app.rameshcreations.com"
         ports:
         - name: rails-aws
           containerPort: 3000

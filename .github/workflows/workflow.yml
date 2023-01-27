@@ -7,10 +7,13 @@ on:
 permissions:
       id-token: write
       contents: read
+env:
+  CLUSTER: rails-aws-dev
+  REGION: us-east-1
 
 jobs:
   build-and-push-image:
-    name: "Build and Deploy Docker Image"
+    name: "Build Docker Image"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -38,3 +41,28 @@ jobs:
         run: |
           docker image build --no-cache -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
           docker image push -a $ECR_REGISTRY/$ECR_REPOSITORY
+
+  deploy:
+    name: "Deploy Docker Image"
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    container: ghcr.io/rameshcreations/iac-image:main
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::592309593815:role/rails-aws-master-github-oidc
+          role-session-name: rails-github-ci
+          aws-region: ${REGION}
+          
+      - name: Check AWS Creds
+        run: aws sts get-caller-identity
+
+      - name: Kubectl Access
+        run: |
+          aws --version
+          aws eks --region ${REGION} update-kubeconfig --name ${CLUSTER}
+          kubectl get namespace

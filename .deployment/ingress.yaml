@@ -4,12 +4,14 @@ metadata:
   name: rails-app-ingress
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
   rules:
   - http:
       paths:
-      - path: /app
+      - path: /app(/|$)(.*)
         pathType: Prefix
         backend:
           service:
