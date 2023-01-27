@@ -69,8 +69,6 @@ Rails.application.configure do
   # config.action_cable.disable_request_forgery_protection = true
 
   # Additional comma-separated hosts for production.
-  config.hosts = [
-    ENV["RAILS_PRODUCTION_HOSTS"],
-    ENV["LB"]
-  ]
+  Rails.application.config.hosts = nil
+
 end
