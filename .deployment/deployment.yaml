@@ -21,14 +21,6 @@ spec:
             memory: "500Mi"
             cpu: "100m"
         imagePullPolicy: Always
-        livenessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - curl -s http://localhost:3000 | grep rails
-          initialDelaySeconds: 5
-          periodSeconds: 10
         ports:
         - name: rails-aws
           containerPort: 3000
