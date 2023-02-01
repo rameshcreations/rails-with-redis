@@ -79,9 +79,9 @@ jobs:
           tokenSuffix: '}'
           files: '[".deployment/dev/*.yaml"]'
         env:
-          name: $IMAGE_TAG
-          path: $IMAGE_TAG
-          version: $IMAGE_TAG
+          name: ${{ env.IMAGE_TAG }}
+          path: ${{ env.IMAGE_TAG }}
+          version: ${{ env.IMAGE_TAG }}
 
       - name: Deploy
         run: |
