@@ -47,3 +47,43 @@ jobs:
           docker image build --no-cache -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  .
           docker image push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           
+  deploy:
+    name: "Deploy Docker Image"
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    container: ghcr.io/rameshcreations/iac-image:main
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+        
+      - name: configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::592309593815:role/rails-aws-master-github-oidc
+          role-session-name: rails-github-ci
+          aws-region: us-east-1
+          
+      - name: Check AWS Creds
+        run: aws sts get-caller-identity
+
+      - name: Set Image Tag
+        run: echo "IMAGE_TAG=$(echo ${{ steps.branch-name.outputs.head_ref_branch }} | cut -d'/' -f 2)" >> $GITHUB_ENV
+        
+      - uses: cschleiden/replace-tokens@v1
+        with:
+          tokenPrefix: '{'
+          tokenSuffix: '}'
+          files: '[".deployment/dev/*.yaml"]'
+        env:
+          name: $IMAGE_TAG
+          path: $IMAGE_TAG
+          version: $IMAGE_TAG
+
+      - name: Deploy
+        run: |
+          aws --version
+          aws eks --region us-east-1 update-kubeconfig --name ${CLUSTER}
