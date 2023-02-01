@@ -19,6 +19,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
         
       - name: configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -36,6 +40,6 @@ jobs:
 
       - name: Test
         run: |
-          echo ${{ github.event.pull_request.base.ref }}
+          echo "Running on pr: ${{ steps.branch-name.outputs.head_ref_branch }}"
           ls -al .deployment/
           
