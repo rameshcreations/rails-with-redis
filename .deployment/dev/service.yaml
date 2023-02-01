@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rails-aws-service-{name}
+spec:
+  selector:
+    app: rails-aws-{name}
+  ports:
+    - name: rails-aws-service-{name}
+      port: 80
+      targetPort: 3000
